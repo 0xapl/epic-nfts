@@ -13,6 +13,12 @@ import { Base64 } from "./libraries/Base64.sol";
 contract MyEpicNFT is ERC721URIStorage {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
+  
+  uint256 MAX_SUPPLY = 50;
+
+  function getMaxSupply() external view returns (uint256) {
+    return MAX_SUPPLY;
+  }
 
   // We split the SVG at the part where it asks for the background color.
   string svgPartOne = "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='";
@@ -61,6 +67,7 @@ contract MyEpicNFT is ERC721URIStorage {
   }
 
   function makeAnEpicNFT() public {
+    require(_tokenIds.current() < 50);
     uint256 newItemId = _tokenIds.current();
 
     string memory first = pickRandomFirstWord(newItemId);
@@ -101,5 +108,9 @@ contract MyEpicNFT is ERC721URIStorage {
     _tokenIds.increment();
     console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
     emit NewEpicNFTMinted(msg.sender, newItemId);
+  }
+
+  function getTotalNFTsMintedSoFar() external view returns (uint256) {
+    return _tokenIds.current();
   }
 }
